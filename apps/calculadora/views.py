@@ -1,9 +1,12 @@
+from django.shortcuts import render 
 from django.http import JsonResponse
 import math
 
 # Vista principal temporal
-def home(request):
-    return JsonResponse({"mensaje": "Bienvenido al Dashboard de Cálculo - Backend en funcionamiento 🚀"})
+def index(request):
+    return render(request, 'calculadora/index.html')
+#def home(request):
+    #return JsonResponse({"mensaje": "Bienvenido al Dashboard de Cálculo - Backend en funcionamiento 🚀"})
 
 # Función factorial
 def factorial_view(request, numero: int):

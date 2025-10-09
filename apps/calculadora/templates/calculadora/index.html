@@ -1,9 +1,32 @@
-<!DOCTYPE html>
-<html>
+{% load static %}
+<!doctype html>
+<html lang="es">
 <head>
-    <title>Calculadora Dashboard</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calculadora - Front</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <h1>Bienvenido a la Calculadora</h1>
+  <div class="calculator-dashboard">
+    <h1>Calculadora</h1>
+    <div class="inputs">
+      <input id="numA" type="text" placeholder="Número A" />
+      <input id="numB" type="text" placeholder="Número B" />
+    </div>
+    <div class="buttons-grid">
+      <button onclick="realizarOperacion('sumar')">Sumar</button>
+      <button onclick="realizarOperacion('restar')">Restar</button>
+      <button onclick="realizarOperacion('multiplicar')">Multiplicar</button>
+      <button onclick="realizarOperacion('dividir')">Dividir</button>
+      <button onclick="realizarOperacion('potencia')">Potencia</button>
+      <button onclick="realizarOperacion('raiz')">Raíz (A)</button>
+      <button onclick="realizarOperacion('factorial')">Factorial (A)</button>
+    </div>
+    <div class="result-display">
+      <div id="resultadoArea"> Resultado...</div>
+    </div>
+  </div>
+  <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
