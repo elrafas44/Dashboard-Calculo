@@ -66,3 +66,32 @@ h1 {
 .buttons-grid button:hover {
     background-color: #0056b3;
 }
+/* ESTILOS ESPECÍFICOS DEL BOTÓN CALCULAR */
+#calculateButton {
+    background-color: #28a745; /* Verde Bootstrap */
+    color: white; /* Texto blanco */
+    border: none;
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 10px 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 10px 0 20px 0; /* Espacio arriba y abajo para separarlo */
+    width: 100%; /* Que ocupe todo el ancho del contenedor */
+    transition: background-color 0.2s ease;
+    
+    display: block !important; 
+}
+
+#calculateButton:hover {
+    background-color: #218838; /* Color un poco más oscuro al pasar el mouse */
+}
+
+/* Opcional: Centrar los inputs */
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center; /* Centra los inputs en el contenedor */
+    margin-bottom: 20px;
+}

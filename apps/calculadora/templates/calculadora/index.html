@@ -1,32 +1,154 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Calculadora - Front</title>
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Calculadora Distribuida</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-  <div class="calculator-dashboard">
-    <h1>Calculadora</h1>
-    <div class="inputs">
-      <input id="numA" type="text" placeholder="Número A" />
-      <input id="numB" type="text" placeholder="Número B" />
+    <div class="calculator-dashboard">
+        <h1> Calculadoraa</h1>
+        
+        <div class="inputs" id="inputContainer">
+            <input type="text" id="numA" placeholder="Número A" style="display: none;">
+            <input type="text" id="numB" placeholder="Número B" style="display: none;">
+        </div>
+        
+        <div class="buttons-grid">
+            <button onclick="seleccionarOperacion('sumar')">+</button>
+            <button onclick="seleccionarOperacion('restar')">-</button>
+            <button onclick="seleccionarOperacion('multiplicar')">×</button>
+            <button onclick="seleccionarOperacion('dividir')">÷</button>
+            
+            <button onclick="seleccionarOperacion('raiz')">√ Raíz</button>
+            <button onclick="seleccionarOperacion('factorial')">! Factorial</button>
+            <button onclick="seleccionarOperacion('potencia')">^ Potencia</button> 
+        </div>
+
+        <div class="result-display">
+            <button id="calculateButton" style="display: none;">Calcular</button>
+            <p id="resultadoArea">Selecciona una operación...</p>
+        </div>
     </div>
-    <div class="buttons-grid">
-      <button onclick="realizarOperacion('sumar')">Sumar</button>
-      <button onclick="realizarOperacion('restar')">Restar</button>
-      <button onclick="realizarOperacion('multiplicar')">Multiplicar</button>
-      <button onclick="realizarOperacion('dividir')">Dividir</button>
-      <button onclick="realizarOperacion('potencia')">Potencia</button>
-      <button onclick="realizarOperacion('raiz')">Raíz (A)</button>
-      <button onclick="realizarOperacion('factorial')">Factorial (A)</button>
-    </div>
-    <div class="result-display">
-      <div id="resultadoArea"> Resultado...</div>
-    </div>
-  </div>
-  <script src="{% static 'js/script.js' %}"></script>
+
+    <script>
+        const BASE_API_URL = '/'; 
+        let currentOperation = null; 
+
+        // FUNCIÓN 1: Maneja la selección de botones (cambios de UI)
+        function seleccionarOperacion(operacion) {
+            currentOperation = operacion;
+            const numA = document.getElementById('numA');
+            const numB = document.getElementById('numB');
+            const calcBtn = document.getElementById('calculateButton');
+            const resultadoArea = document.getElementById('resultadoArea');
+            
+            resultadoArea.textContent = 'Ingresa los números y haz clic en Calcular';
+
+            numA.value = ''; 
+            numB.value = '';
+            numA.style.display = 'inline-block';
+            calcBtn.style.display = 'block';
+
+            // Lógica Unaria vs. Binaria
+            if (['sumar', 'restar', 'multiplicar', 'dividir', 'potencia'].includes(operacion)) {
+                numB.style.display = 'inline-block';
+                numA.placeholder = 'Número A (Base)';
+                numB.placeholder = 'Número B (Exponente)';
+            } else {
+                numB.style.display = 'none';
+                if (operacion === 'raiz') {
+                     numA.placeholder = 'Número para la Raíz';
+                } else if (operacion === 'factorial') {
+                     numA.placeholder = 'Número para Factorial';
+                } else {
+                     numA.placeholder = 'Número A';
+                }
+            }
+        }
+
+        // FUNCIÓN 2: Ejecuta la operación (Llama al API)
+        async function realizarOperacion(operacion) {
+            if (!operacion) {
+                document.getElementById('resultadoArea').textContent = 'ERROR: Primero selecciona una operación.';
+                return;
+            }
+            
+            const numA = document.getElementById('numA').value.trim();
+            const numB = document.getElementById('numB').value.trim();
+            const resultadoArea = document.getElementById('resultadoArea');
+
+            const ENDPOINT_MAP = {
+                'sumar': 'suma',
+                'restar': 'resta',
+                'multiplicar': 'multiplicacion',
+                'dividir': 'division',
+                'raiz': 'raiz',
+                'factorial': 'factorial',
+                'potencia': 'potencia'
+            };
+            
+            const endpoint = ENDPOINT_MAP[operacion];
+
+            try {
+                let url;
+                
+                // --- Lógica para Rutas Binarias ---
+                if (['sumar', 'restar', 'multiplicar', 'dividir', 'potencia'].includes(operacion)) {
+                    if (!numA || !numB) {
+                        resultadoArea.textContent = 'ERROR: Se necesitan ambos números.';
+                        return;
+                    }
+                    url = `${BASE_API_URL}${endpoint}/${numA}/${numB}/`;
+                } 
+                
+                // --- Lógica para Rutas Unarias ---
+                else if (operacion === 'factorial' || operacion === 'raiz') {
+                    if (!numA) {
+                        resultadoArea.textContent = 'ERROR: Ingresa el Número A.';
+                        return;
+                    }
+                    let n = (operacion === 'factorial') ? parseInt(numA) : numA;
+                    
+                    if (isNaN(n) && operacion === 'factorial') {
+                         resultadoArea.textContent = 'ERROR: Para factorial, ingresa un entero válido.';
+                         return;
+                    }
+                    url = `${BASE_API_URL}${endpoint}/${n}/`;
+                }
+                
+                const respuesta = await fetch(url);
+
+                if (!respuesta.ok) {
+                    throw new Error(`Error ${respuesta.status}. Fallo de conexión o API.`);
+                }
+
+                const datos = await respuesta.json();
+                
+                if (datos.resultado !== undefined) {
+                    resultadoArea.textContent = `Resultado: ${datos.resultado}`;
+                } else if (datos.error) {
+                     resultadoArea.textContent = `ERROR: ${datos.error}`;
+                } else {
+                     resultadoArea.textContent = 'ERROR: Respuesta del servidor inválida.';
+                }
+
+            } catch (error) {
+                console.error("Fallo la conexión o la URL:", error);
+                resultadoArea.textContent = `ERROR de conexión/API: ${error.message}`;
+            }
+        }
+
+        // ASIGNAR EVENTO AL BOTÓN DE CALCULAR AL CARGAR LA PÁGINA
+        document.addEventListener('DOMContentLoaded', () => {
+            const calcBtn = document.getElementById('calculateButton');
+            if (calcBtn) {
+                // Al hacer click, llama a la función principal con la operación actual seleccionada
+                calcBtn.onclick = () => realizarOperacion(currentOperation);
+            }
+        });
+    </script>
 </body>
 </html>
