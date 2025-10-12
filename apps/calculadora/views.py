@@ -9,7 +9,13 @@ def index(request):
     #return JsonResponse({"mensaje": "Bienvenido al Dashboard de Cálculo - Backend en funcionamiento 🚀"})
 
 # Función factorial
-def factorial_view(request, numero: int):
+def factorial_view(request, numero):
+    try:
+        numero = int(numero)
+    except ValueError:
+        return JsonResponse({"error": "El valor debe ser un número entero."})
+    if numero < 0:
+        return JsonResponse({"error": "El factorial solo está definido para enteros no negativos."})
     try:
         resultado = math.factorial(numero)
         return JsonResponse({"operacion": "factorial", "numero": numero, "resultado": resultado})
