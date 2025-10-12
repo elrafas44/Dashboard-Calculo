@@ -16,11 +16,14 @@ def factorial_view(request, numero):
         return JsonResponse({"error": "El valor debe ser un número entero."})
     if numero < 0:
         return JsonResponse({"error": "El factorial solo está definido para enteros no negativos."})
+    MAX_FACTORIAL = 150
+    if numero > MAX_FACTORIAL:
+        return JsonResponse({"error": f"El número es demasiado grande para calcular el factorial (máximo permitido: {MAX_FACTORIAL})."})
     try:
         resultado = math.factorial(numero)
-        return JsonResponse({"operacion": "factorial", "numero": numero, "resultado": resultado})
+        return JsonResponse({"operacion": "factorial", "numero": numero, "resultado": str(resultado)})
     except ValueError:
-        return JsonResponse({"error": "El factorial solo está definido para enteros no negativos."})
+        return JsonResponse({"error": "El factorial solo está definido para enteros, no negativos."})
 
 # Función potencia
 
