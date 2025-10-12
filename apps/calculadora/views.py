@@ -17,9 +17,35 @@ def factorial_view(request, numero: int):
         return JsonResponse({"error": "El factorial solo está definido para enteros no negativos."})
 
 # Función potencia
-def potencia_view(request, base: float, exponente: float):
-    resultado = math.pow(base, exponente)
-    return JsonResponse({"operacion": "potencia", "base": base, "exponente": exponente, "resultado": resultado})
+
+def potencia_view(request, base, exponente):
+    try:
+        base = int(base)
+        exponente = int(exponente)
+
+        MAX_BASE = 10_000
+        MAX_EXPONENTE = 10_000
+
+        # Validar que no excedan los límites seguros
+        if abs(base) > MAX_BASE or abs(exponente) > MAX_EXPONENTE:
+            return JsonResponse({
+                "error": f"Los números son demasiado grandes para calcular (límite base ±{MAX_BASE}, exponente ±{MAX_EXPONENTE})"
+            })
+
+        # Calcular potencia
+        resultado = base ** exponente
+
+        return JsonResponse({"resultado": str(resultado)})
+
+    except OverflowError:
+        return JsonResponse({"error": "El resultado es demasiado grande para representarse"})
+    except ValueError:
+        return JsonResponse({"error": "Los parámetros deben ser enteros"})
+    except Exception as e:
+        return JsonResponse({"error": f"Error inesperado: {str(e)}"})
+
+
+
 
 # Función raíz cuadrada
 def raiz_view(request, numero: float):
