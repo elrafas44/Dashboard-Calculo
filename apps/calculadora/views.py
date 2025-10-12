@@ -48,7 +48,11 @@ def potencia_view(request, base, exponente):
 
 
 # Función raíz cuadrada
-def raiz_view(request, numero: float):
+def raiz_view(request, numero):
+    try:
+        numero = float(numero)
+    except ValueError:
+        return JsonResponse({"error": "El valor debe ser numérico."})
     if numero < 0:
         return JsonResponse({"error": "No se puede calcular la raíz cuadrada de un número negativo."})
     resultado = math.sqrt(numero)
