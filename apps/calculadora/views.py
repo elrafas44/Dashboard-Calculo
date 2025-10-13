@@ -82,6 +82,7 @@ def suma_view(request, num1: str, num2: str):
     resultado_str = format(resultado, 'f')
     return JsonResponse({"operacion": "suma", "num1": str(num1), "num2": str(num2), "resultado": resultado_str})
 
+#funcion resta
 def resta_view(request, num1: str, num2: str):
     pattern = r'^[+-]?\d*\.?\d+$'
     if not re.fullmatch(pattern, num1) or not re.fullmatch(pattern, num2):
@@ -95,6 +96,7 @@ def resta_view(request, num1: str, num2: str):
     resultado_str = format(resultado, 'f')
     return JsonResponse({"operacion": "resta", "num1": str(num1), "num2": str(num2), "resultado": resultado_str})
 
+#Funcion  multiplicacion
 def multiplicacion_view(request, num1: str, num2: str):
     pattern = r'^[+-]?\d*\.?\d+$'
     if not re.fullmatch(pattern, num1) or not re.fullmatch(pattern, num2):
@@ -108,6 +110,7 @@ def multiplicacion_view(request, num1: str, num2: str):
     resultado_str = format(resultado, 'f')
     return JsonResponse({"operacion": "multiplicacion", "num1": str(num1), "num2": str(num2), "resultado": resultado_str})
 
+#Funcion de division
 def division_view(request, num1: str, num2: str):
     pattern = r'^[+-]?\d*\.?\d+$'
     if not re.fullmatch(pattern, num1) or not re.fullmatch(pattern, num2):
