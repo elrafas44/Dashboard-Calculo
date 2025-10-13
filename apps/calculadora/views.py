@@ -7,8 +7,6 @@ import re
 # Vista principal temporal
 def index(request):
     return render(request, 'calculadora/index.html')
-#def home(request):
-    #return JsonResponse({"mensaje": "Bienvenido al Dashboard de Cálculo - Backend en funcionamiento 🚀"})
 
 # Función factorial
 def factorial_view(request, numero):
@@ -67,7 +65,8 @@ def raiz_view(request, numero):
     if numero < 0:
         return JsonResponse({"error": "No se puede calcular la raíz cuadrada de un número negativo."})
     resultado = math.sqrt(numero)
-    return JsonResponse({"operacion": "raiz", "numero": numero, "resultado": resultado})
+    resultado_str = format(resultado, 'f')
+    return JsonResponse({"operacion": "raiz", "numero": numero, "resultado": resultado_str})
 
 # Función suma
 def suma_view(request, num1: str, num2: str):
