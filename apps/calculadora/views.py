@@ -1,6 +1,8 @@
 from django.shortcuts import render 
 from django.http import JsonResponse
 import math
+from decimal import Decimal, InvalidOperation
+import re
 
 # Vista principal temporal
 def index(request):
@@ -69,42 +71,55 @@ def raiz_view(request, numero):
 
 # Función suma
 def suma_view(request, num1: str, num2: str):
+    pattern = r'^[+-]?\d*\.?\d+$'
+    if not re.fullmatch(pattern, num1) or not re.fullmatch(pattern, num2):
+        return JsonResponse({"error": "Solo se permiten números, + y -."})
     try:
-        num1 = float(num1)
-        num2 = float(num2)
-    except ValueError:
+        num1 = Decimal(num1)
+        num2 = Decimal(num2)
+    except InvalidOperation:
         return JsonResponse({"error": "Los valores deben ser numéricos."})
     resultado = num1 + num2
-    return JsonResponse({"operacion": "suma", "num1": num1, "num2": num2, "resultado": resultado})
+    resultado_str = format(resultado, 'f')
+    return JsonResponse({"operacion": "suma", "num1": str(num1), "num2": str(num2), "resultado": resultado_str})
 
-# Función resta
 def resta_view(request, num1: str, num2: str):
+    pattern = r'^[+-]?\d*\.?\d+$'
+    if not re.fullmatch(pattern, num1) or not re.fullmatch(pattern, num2):
+        return JsonResponse({"error": "Solo se permiten números, + y -."})
     try:
-        num1 = float(num1)
-        num2 = float(num2)
-    except ValueError:
+        num1 = Decimal(num1)
+        num2 = Decimal(num2)
+    except InvalidOperation:
         return JsonResponse({"error": "Los valores deben ser numéricos."})
     resultado = num1 - num2
-    return JsonResponse({"operacion": "resta", "num1": num1, "num2": num2, "resultado": resultado})
+    resultado_str = format(resultado, 'f')
+    return JsonResponse({"operacion": "resta", "num1": str(num1), "num2": str(num2), "resultado": resultado_str})
 
-# Función multiplicación
 def multiplicacion_view(request, num1: str, num2: str):
+    pattern = r'^[+-]?\d*\.?\d+$'
+    if not re.fullmatch(pattern, num1) or not re.fullmatch(pattern, num2):
+        return JsonResponse({"error": "Solo se permiten números, + y -."})
     try:
-        num1 = float(num1)
-        num2 = float(num2)
-    except ValueError:
+        num1 = Decimal(num1)
+        num2 = Decimal(num2)
+    except InvalidOperation:
         return JsonResponse({"error": "Los valores deben ser numéricos."})
     resultado = num1 * num2
-    return JsonResponse({"operacion": "multiplicacion", "num1": num1, "num2": num2, "resultado": resultado})
+    resultado_str = format(resultado, 'f')
+    return JsonResponse({"operacion": "multiplicacion", "num1": str(num1), "num2": str(num2), "resultado": resultado_str})
 
-# Función división
 def division_view(request, num1: str, num2: str):
+    pattern = r'^[+-]?\d*\.?\d+$'
+    if not re.fullmatch(pattern, num1) or not re.fullmatch(pattern, num2):
+        return JsonResponse({"error": "Solo se permiten números, + y -."})
     try:
-        num1 = float(num1)
-        num2 = float(num2)
-    except ValueError:
+        num1 = Decimal(num1)
+        num2 = Decimal(num2)
+    except InvalidOperation:
         return JsonResponse({"error": "Los valores deben ser numéricos."})
     if num2 == 0:
         return JsonResponse({"error": "No se puede dividir por cero."})
     resultado = num1 / num2
-    return JsonResponse({"operacion": "division", "num1": num1, "num2": num2, "resultado": resultado})
+    resultado_str = format(resultado, 'f')
+    return JsonResponse({"operacion": "division", "num1": str(num1), "num2": str(num2), "resultado": resultado_str})
